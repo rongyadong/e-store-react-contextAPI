@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import Product from './Product'
 
 class ProductList extends Component {
-  state = {}
+  state = {
+    products: []
+  }
   render() {
     return (
       <div>
