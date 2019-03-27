@@ -4,7 +4,7 @@ import './App.css'
 import Navbar from './components/Navbar'
 import ProductList from './components/ProductList'
 import Details from './components/Details'
-import Cart from './components/Cart'
+import Cart from './components/Cart/Cart'
 import NotFound from './components/Notfound'
 import Modal from './components/Modal'
 
