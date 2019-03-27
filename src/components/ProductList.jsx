@@ -1,6 +1,6 @@
 import React from 'react'
 import Product from './Product'
-import Title from './Title'
+import Title from '../util/Title'
 import { ProductConsumer } from '../context'
 
 const ProductList = () => {

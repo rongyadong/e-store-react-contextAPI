@@ -7,11 +7,11 @@ const ProductContext = React.createContext()
 
 class ProductProvider extends Component {
   state = {
+    detailProduct,
     products: [],
     cart: [],
     modalOpen: false,
     modalProduct: detailProduct,
-    detailProduct,
     cartSubTotal: 0,
     cartTax: 0,
     cartTotal: 0
@@ -41,7 +41,7 @@ class ProductProvider extends Component {
         cart: [...this.state.cart, product]
       },
       () => {
-        console.log(this.state)
+        this.addTotals()
       }
     )
   }
@@ -77,19 +77,78 @@ class ProductProvider extends Component {
 
   //Cart related functions
   increment = id => {
-    console.log('this is increment method')
+    let cart = [...this.state.cart]
+    const selectedProduct = cart.find(item => item.id === id)
+    const index = cart.indexOf(selectedProduct)
+    const product = cart[index]
+
+    product.count = product.count + 1
+    product.total = product.count * product.price
+
+    this.setState({ cart: [...cart] }, () => {
+      this.addTotals()
+    })
   }
 
   decrement = id => {
-    console.log('this is decrement method')
+    let cart = [...this.state.cart]
+    const selectedProduct = cart.find(item => item.id === id)
+    const index = cart.indexOf(selectedProduct)
+    const product = cart[index]
+
+    product.count = product.count - 1
+
+    if (product.count === 0) {
+      this.removeItem(id)
+    } else {
+      product.total = product.count * product.price
+
+      this.setState({ cart: [...cart] }, () => {
+        this.addTotals()
+      })
+    }
   }
 
   removeItem = id => {
-    console.log('this is remove method')
+    let products = [...this.state.products]
+    let cart = [...this.state.cart]
+
+    cart = cart.filter(item => item.id !== id)
+    const index = products.indexOf(this.getItem(id))
+    let product = products[index]
+    product.inCart = false
+    product.count = 0
+    product.total = 0
+
+    this.setState(
+      {
+        cart: [...cart],
+        products: [...products]
+      },
+      () => {
+        this.addTotals()
+      }
+    )
   }
 
   clearCart = () => {
-    console.log('this is clear method')
+    this.setState({ cart: [] }, () => {
+      this.loadProducts()
+      this.addTotals()
+    })
+  }
+
+  addTotals = () => {
+    let subTotal = 0
+    this.state.cart.map(item => (subTotal += item.total))
+    const tax = parseFloat((subTotal * 0.09).toFixed(2))
+    const total = subTotal + tax
+
+    this.setState({
+      cartSubTotal: subTotal,
+      cartTax: tax,
+      cartTotal: total
+    })
   }
 
   render() {
